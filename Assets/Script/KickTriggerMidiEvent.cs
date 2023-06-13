@@ -38,11 +38,11 @@ public class KickTriggerMidiEvent : MidiNoteComponent
         bToggle = !bToggle;
     }
 
-    private void OnKickOff(float audioLevel, uint seed)
+    private void OnKickOff(float audioLevel)
     {
     }
 
-    private void OnKickOn(float audioLevel, uint seed)
+    private void OnKickOn(float audioLevel)
     {
         if (bToggle)
         {

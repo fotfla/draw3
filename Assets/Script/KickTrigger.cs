@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Lasp;
-using Random = Unity.Mathematics.Random;
 
 public class KickTrigger : MonoBehaviour
 {
@@ -13,29 +12,22 @@ public class KickTrigger : MonoBehaviour
     float threshold = 0.3f;
     bool isUpdate = false;
 
-    public delegate void Kick(float audioLevel, uint seed);
+    public delegate void Kick(float audioLevel);
 
     public Kick onKickOn;
     public Kick onKickOff;
-
-    Random random;
-
-    void OnEnable()
-    {
-        random = new Random(255);
-    }
 
     void Update()
     {
         if (lowTracker.normalizedLevel > threshold && isUpdate)
         {
             isUpdate = false;
-            onKickOn?.Invoke(lowTracker.normalizedLevel, random.NextUInt(0, 65535));
+            onKickOn?.Invoke(lowTracker.normalizedLevel);
         }
         else if (lowTracker.normalizedLevel < threshold && !isUpdate)
         {
             isUpdate = true;
-            onKickOff?.Invoke(0, 0);
+            onKickOff?.Invoke(0);
         }
     }
 

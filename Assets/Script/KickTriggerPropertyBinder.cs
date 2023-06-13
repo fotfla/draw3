@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.VFX;
 using UnityEngine.VFX.Utility;
+using Random = Unity.Mathematics.Random;
 
 [VFXBinder("Audio/KickTrigger")]
 public class KickTriggerPropertyBinder : VFXBinderBase
@@ -18,6 +19,7 @@ public class KickTriggerPropertyBinder : VFXBinderBase
     float audioLevel;
 
     public float AttackSpeed;
+    Random random;
 
     public override bool IsValid(VisualEffect component)
     {
@@ -37,18 +39,19 @@ public class KickTriggerPropertyBinder : VFXBinderBase
     {
         if (trigger != null)
         {
+            random.InitState(65536);
             trigger.onKickOn += OnKick;
             trigger.onKickOff += OnKickOff;
         }
     }
 
-    private void OnKick(float audioLevel, uint seed)
+    private void OnKick(float audioLevel)
     {
-        this.seed = seed;
+        this.seed = random.NextUInt();
         this.audioLevel = audioLevel;
     }
 
-    private void OnKickOff(float audioLevel, uint seed)
+    private void OnKickOff(float audioLevel)
     {
         this.audioLevel = 0;
     }
