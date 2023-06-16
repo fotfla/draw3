@@ -1,0 +1,116 @@
+// https://ciphrd.com/2020/04/08/pixel-sorting-on-shader-using-well-crafted-sorting-filters-glsl/
+#pragma kernel Sort
+#pragma kernel VectorSort
+
+RWTexture2D<float4> _Src;
+RWTexture2D<float4> _Dst;
+
+int _Iteration;
+int _PixelSize;
+
+float _Threshold;
+
+#define th _Threshold
+
+bool IsEven(int x){
+    return fmod(x,2) == 0;
+}
+
+float Luminance(float3 color){
+    const float3 l = float3(0.2126, 0.7152, 0.0722);
+    return dot(color, l);
+}
+
+[numthreads(8,8,1)]
+void Sort (uint3 id : SV_DispatchThreadID)
+{
+    uint2 index = id.xy;
+    float3 c = _Src[index].rgb;
+
+    // Even
+    if(IsEven(_Iteration)){
+        if(IsEven(index.x)){
+            float3 cl = c; // L
+            float3 cr = _Src[index + uint2(1,0)].rgb; // R
+            float al = Luminance(cl);
+            float ar = Luminance(cr);
+            c = al <= th || ar <= th ? c : (al < ar ? cl : cr);
+            
+        } else {
+            float3 cl = _Src[index - uint2(1,0)].rgb; // L
+            float3 cr = c; // R
+            float al = Luminance(cl);
+            float ar = Luminance(cr);
+            c = al <= th || ar <= th ? c : al > ar ? cl : cr;
+        }
+    } else {
+        if(index.x > 0 && index.x < (uint)(_PixelSize -1)){
+            if(!IsEven(index.x)){
+                float3 cl = c; // L
+                float3 cr = _Src[index + uint2(1,0)].rgb; // R
+                float al = Luminance(cl);
+                float ar = Luminance(cr);
+                c = al <= th || ar <= th ? c : (al < ar ? cl : cr);
+            } else {
+                float3 cl = _Src[index - uint2(1,0)].rgb; // L
+                float3 cr = c; // R
+                float al = Luminance(cl);
+                float ar = Luminance(cr);
+                c = al <= th || ar <= th ? c : al > ar ? cl : cr;
+            }
+        }
+    }
+
+    _Dst[index] = float4(c,1);
+}
+
+Texture2D _VectorField;
+
+bool IsClassed(float2 dir){
+    return sign(dir.x * 2.0 + dir.y) < 0;
+}
+
+[numthreads(8,8,1)]
+void VectorSort (uint3 id : SV_DispatchThreadID)
+{
+    uint2 index = id.xy;
+    float3 c = _Src[index].rgb;
+
+    float4 vf = _VectorField[index];
+
+    // Even
+    if(IsEven(_Iteration)){
+        if(IsEven(index.x)){
+            float3 cl = c; // L
+            float3 cr = _Src[index + uint2(1,0)].rgb; // R
+            float al = Luminance(cl);
+            float ar = Luminance(cr);
+            c = al < th || ar < th ? c : (al < ar ? cl : cr);
+            
+        } else {
+            float3 cl = _Src[index - uint2(1,0)].rgb; // L
+            float3 cr = c; // R
+            float al = Luminance(cl);
+            float ar = Luminance(cr);
+            c = al < th || ar < th ? c : al > ar ? cl : cr;
+        }
+    } else {
+        if(index.x > 0 && index.x < (uint)(_PixelSize -1)){
+            if(!IsEven(index.x)){
+                float3 cl = c; // L
+                float3 cr = _Src[index + uint2(1,0)].rgb; // R
+                float al = Luminance(cl);
+                float ar = Luminance(cr);
+                c = al < th || ar < th ? c : (al < ar ? cl : cr);
+            } else {
+                float3 cl = _Src[index - uint2(1,0)].rgb; // L
+                float3 cr = c; // R
+                float al = Luminance(cl);
+                float ar = Luminance(cr);
+                c = al < th || ar < th ? c : al > ar ? cl : cr;
+            }
+        }
+    }
+
+    _Dst[index] = float4(c,1);
+}
