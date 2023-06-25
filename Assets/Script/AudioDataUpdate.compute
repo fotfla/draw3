@@ -1,0 +1,42 @@
+#pragma kernel Update
+
+RWStructuredBuffer<float3> _VertexData;
+RWStructuredBuffer<float4> _CircleData;
+int _Count;
+
+float3 GetNormal(float3 pos){
+    return 0;
+}
+
+float3 GetTangent(float3 pos){
+    return 0;
+}
+
+float CalcCurvature(float3 p0, float3 p1){
+
+}
+
+float4 CalcData(float2 p1, float2 p0, float2 p2){
+    float2 dr0 = p1 - p0; // r_dot_0
+    float2 dr1 = p2 - p1; // r_dot_1
+
+    float r0 = dot(p0, p0);
+    float r1 = dot(p1, p1);
+    float r2 = dot(p2, p2);
+
+    float d = (dr1.x * dr0.y - dr0.x * dr1.y) * 2;
+
+    float x = (  dr1.y * (r0 - r1) - dr0.y * (r2 - r1)) / d;
+    float y = (- dr1.x * (r0 - r1) + dr1.x * (r2 - r1)) / d;
+
+    float r = length(p1 - float2(x,y));
+    return float4(x, y, 0, r);
+}
+
+[numthreads(8,1,1)]
+void Update (uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    if(index == 0 || index == _Count - 1) return;
+    _CircleData[index] = CalcData(_VertexData[index], _VertexData[index - 1], _VertexData[index + 1]);
+}
