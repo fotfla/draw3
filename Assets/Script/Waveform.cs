@@ -23,12 +23,16 @@ public class Waveform : MonoBehaviour
 
     [SerializeField]
     ComputeShader cs;
+
+    [SerializeField, Range(0, 10)]
+    float threshold;
     int updateKernel;
     GraphicsBuffer vertexData;
     GraphicsBuffer circleData;
     private readonly int VertexProp = Shader.PropertyToID("_VertexData");
     private readonly int CircleProp = Shader.PropertyToID("_CircleData");
     private readonly int CountProp = Shader.PropertyToID("_Count");
+    private readonly int ThresholdProp = Shader.PropertyToID("_Threshold");
 
     void Start()
     {
@@ -59,44 +63,47 @@ public class Waveform : MonoBehaviour
         vertexData = new GraphicsBuffer(GraphicsBuffer.Target.Structured, vertexCount, 3 * sizeof(float));
 
         vfx.SetGraphicsBuffer(CircleProp, circleData);
+        vfx.SetGraphicsBuffer(VertexProp, vertexData);
 
-        mesh = new Mesh();
-        mesh.bounds = new Bounds(Vector3.zero, Vector3.one * 10);
+        // mesh = new Mesh();
+        // mesh.bounds = new Bounds(Vector3.zero, Vector3.one * 10);
 
         using (var vertices = CreateVertexArray(default(NativeSlice<float>)))
         {
-            var desc = new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 3);
+            // var desc = new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 3);
 
-            mesh.SetVertexBufferParams(vertices.Length, desc);
-            mesh.SetVertexBufferData(vertices, 0, 0, vertices.Length);
+            // mesh.SetVertexBufferParams(vertices.Length, desc);
+            // mesh.SetVertexBufferData(vertices, 0, 0, vertices.Length);
 
             vertexData.SetData(vertices);
             cs.SetBuffer(updateKernel, VertexProp, vertexData);
             cs.SetBuffer(updateKernel, CircleProp, circleData);
             cs.SetInt(CountProp, vertices.Length);
+            cs.SetFloat(ThresholdProp, threshold);
             cs.Dispatch(updateKernel, vertices.Length / 8, 1, 1);
         }
 
-        using (var indices = CreateIndexArray())
-        {
-            var desc = new SubMeshDescriptor(0, indices.Length, MeshTopology.Lines);
+        // using (var indices = CreateIndexArray())
+        // {
+        //     var desc = new SubMeshDescriptor(0, indices.Length, MeshTopology.Lines);
 
-            mesh.SetIndexBufferParams(indices.Length, IndexFormat.UInt32);
-            mesh.SetIndexBufferData(indices, 0, 0, indices.Length);
-            mesh.SetSubMesh(0, desc);
-        }
+        //     mesh.SetIndexBufferParams(indices.Length, IndexFormat.UInt32);
+        //     mesh.SetIndexBufferData(indices, 0, 0, indices.Length);
+        //     mesh.SetSubMesh(0, desc);
+        // }
     }
 
     void UpdateMesh(NativeSlice<float> source)
     {
         using (var vertices = CreateVertexArray(source))
         {
-            mesh.SetVertexBufferData(vertices, 0, 0, vertices.Length);
+            // mesh.SetVertexBufferData(vertices, 0, 0, vertices.Length);
 
             vertexData.SetData(vertices);
             cs.SetBuffer(updateKernel, VertexProp, vertexData);
             cs.SetBuffer(updateKernel, CircleProp, circleData);
             cs.SetInt(CountProp, vertices.Length);
+            cs.SetFloat(ThresholdProp, threshold);
             cs.Dispatch(updateKernel, vertices.Length / 8, 1, 1);
         }
     }
@@ -110,7 +117,7 @@ public class Waveform : MonoBehaviour
         {
             var x = (float)i / (vcount - 1);
             var xpos = math.remap(0, 1, -5, 5, x);
-            vertices[i] = math.float3(xpos, source[i] * 5, 0);
+            vertices[i] = math.float3(xpos, source[i] * 10, 0);
         }
         var last = (vcount == 0) ? float3.zero : vertices[vcount - 1];
         for (var i = vcount; i < vertexCount; i++)

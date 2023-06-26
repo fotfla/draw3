@@ -3,6 +3,7 @@
 RWStructuredBuffer<float3> _VertexData;
 RWStructuredBuffer<float4> _CircleData;
 int _Count;
+float _Threshold;
 
 float3 GetNormal(float3 pos){
     return 0;
@@ -29,7 +30,10 @@ float4 CalcData(float2 p1, float2 p0, float2 p2){
     float x = (  dr1.y * (r0 - r1) - dr0.y * (r2 - r1)) / d;
     float y = (- dr1.x * (r0 - r1) + dr1.x * (r2 - r1)) / d;
 
-    float r = length(p1 - float2(x,y));
+    float r = length(p1 - float2(x, y));
+    if(1/r < _Threshold){
+        return float4(p1.x, p1.y, 0, 0);
+    }
     return float4(x, y, 0, r);
 }
 
@@ -37,6 +41,9 @@ float4 CalcData(float2 p1, float2 p0, float2 p2){
 void Update (uint3 id : SV_DispatchThreadID)
 {
     uint index = id.x;
-    if(index == 0 || index == _Count - 1) return;
-    _CircleData[index] = CalcData(_VertexData[index], _VertexData[index - 1], _VertexData[index + 1]);
+    if(index == 0 || index == (uint)(_Count - 1) || index % 4 > 0){
+        _CircleData[index] = float4(0,0,0,0);
+        return;
+    }
+    _CircleData[index] = CalcData(_VertexData[index].xy, _VertexData[index - 1].xy, _VertexData[index + 1].xy);
 }

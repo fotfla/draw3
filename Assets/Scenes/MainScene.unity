@@ -167,10 +167,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74c3e183ec27ba64d83e010bf18edb92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _useDefaultDevice: 1
+  _useDefaultDevice: 0
   _deviceID: '{0.0.1.00000000}.{abaf33fc-64d2-4095-aa00-1ace7beeff03}'
   _channel: 0
-  _filterType: 0
+  _filterType: 3
   _autoGain: 1
   _gain: 6
   _dynamicRange: 12
@@ -383,6 +383,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioLevelTracker: {fileID: 255999013}
+  vfx: {fileID: 1004457605}
+  cs: {fileID: 7200000, guid: 9ae1f5595ba6bda44ac21b7ced0514ac, type: 3}
+  threshold: 1.44
 --- !u!4 &802742094
 Transform:
   m_ObjectHideFlags: 0
