@@ -8,13 +8,10 @@ using UnityEngine.Rendering;
 using UnityEngine.VFX;
 using Lasp;
 
-[RequireComponent(typeof(MeshRenderer))]
 public class Waveform : MonoBehaviour
 {
     [SerializeField]
     AudioLevelTracker audioLevelTracker;
-
-    Mesh mesh;
     [SerializeField]
     float amp = 10;
 
@@ -39,8 +36,6 @@ public class Waveform : MonoBehaviour
     void Start()
     {
         InitializeMesh();
-
-        // GetComponent<MeshFilter>().mesh = mesh;
     }
 
     void Update()
@@ -50,8 +45,6 @@ public class Waveform : MonoBehaviour
 
     void OnDestory()
     {
-        if (mesh != null) Destroy(mesh);
-
         vertexData?.Dispose();
         vertexData = null;
         circleData?.Dispose();
@@ -67,16 +60,8 @@ public class Waveform : MonoBehaviour
         vfx.SetGraphicsBuffer(CircleProp, circleData);
         vfx.SetGraphicsBuffer(VertexProp, vertexData);
 
-        // mesh = new Mesh();
-        // mesh.bounds = new Bounds(Vector3.zero, Vector3.one * 10);
-
         using (var vertices = CreateVertexArray(default(NativeSlice<float>)))
         {
-            // var desc = new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 3);
-
-            // mesh.SetVertexBufferParams(vertices.Length, desc);
-            // mesh.SetVertexBufferData(vertices, 0, 0, vertices.Length);
-
             vertexData.SetData(vertices);
             cs.SetBuffer(updateKernel, VertexProp, vertexData);
             cs.SetBuffer(updateKernel, CircleProp, circleData);
@@ -84,23 +69,12 @@ public class Waveform : MonoBehaviour
             cs.SetFloat(ThresholdProp, threshold);
             cs.Dispatch(updateKernel, vertices.Length / 8, 1, 1);
         }
-
-        // using (var indices = CreateIndexArray())
-        // {
-        //     var desc = new SubMeshDescriptor(0, indices.Length, MeshTopology.Lines);
-
-        //     mesh.SetIndexBufferParams(indices.Length, IndexFormat.UInt32);
-        //     mesh.SetIndexBufferData(indices, 0, 0, indices.Length);
-        //     mesh.SetSubMesh(0, desc);
-        // }
     }
 
     void UpdateMesh(NativeSlice<float> source)
     {
         using (var vertices = CreateVertexArray(source))
         {
-            // mesh.SetVertexBufferData(vertices, 0, 0, vertices.Length);
-
             vertexData.SetData(vertices);
             cs.SetBuffer(updateKernel, VertexProp, vertexData);
             cs.SetBuffer(updateKernel, CircleProp, circleData);
