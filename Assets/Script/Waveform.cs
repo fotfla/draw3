@@ -15,8 +15,10 @@ public class Waveform : MonoBehaviour
     AudioLevelTracker audioLevelTracker;
 
     Mesh mesh;
+    [SerializeField]
+    float amp = 10;
 
-    int vertexCount = 2048;
+    int vertexCount = 512;
 
     [SerializeField]
     VisualEffect vfx;
@@ -38,12 +40,12 @@ public class Waveform : MonoBehaviour
     {
         InitializeMesh();
 
-        GetComponent<MeshFilter>().mesh = mesh;
+        // GetComponent<MeshFilter>().mesh = mesh;
     }
 
     void Update()
     {
-        if (Time.frameCount % 30 == 0) UpdateMesh(audioLevelTracker.audioDataSlice);
+        if (Time.frameCount % 60 == 0) UpdateMesh(audioLevelTracker.audioDataSlice);
     }
 
     void OnDestory()
@@ -116,8 +118,8 @@ public class Waveform : MonoBehaviour
         for (var i = 0; i < vcount; i++)
         {
             var x = (float)i / (vcount - 1);
-            var xpos = math.remap(0, 1, -5, 5, x);
-            vertices[i] = math.float3(xpos, source[i] * 10, 0);
+            var xpos = math.remap(0, 1, -3, 3, x);
+            vertices[i] = math.float3(xpos, source[i] * amp, 0);
         }
         var last = (vcount == 0) ? float3.zero : vertices[vcount - 1];
         for (var i = vcount; i < vertexCount; i++)
