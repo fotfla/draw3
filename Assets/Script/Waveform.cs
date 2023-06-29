@@ -14,6 +14,8 @@ public class Waveform : MonoBehaviour
     AudioLevelTracker audioLevelTracker;
     [SerializeField]
     float amp = 10;
+    [SerializeField]
+    uint updateFrame = 60;
 
     int vertexCount = 512;
 
@@ -40,7 +42,7 @@ public class Waveform : MonoBehaviour
 
     void Update()
     {
-        if (Time.frameCount % 60 == 0) UpdateMesh(audioLevelTracker.audioDataSlice);
+        if (Time.frameCount % updateFrame == 0) UpdateMesh(audioLevelTracker.audioDataSlice);
     }
 
     void OnDestory()
