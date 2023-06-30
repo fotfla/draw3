@@ -3,7 +3,7 @@
 RWStructuredBuffer<float3> _VertexData;
 RWStructuredBuffer<float4> _CircleData;
 int _Count;
-float _Threshold;
+float2 _Threshold;
 
 float4 CalcData(float2 p1, float2 p0, float2 p2){
     float2 dr0 = p1 - p0; // r_dot_0
@@ -15,17 +15,17 @@ float4 CalcData(float2 p1, float2 p0, float2 p2){
 
     float d = (dr1.x * dr0.y - dr0.x * dr1.y) * 2;
 
-    float x = (  dr1.y * (r0 - r1) - dr0.y * (r2 - r1)) / d;
-    float y = (- dr1.x * (r0 - r1) + dr1.x * (r2 - r1)) / d;
+    float x = (  dr1.y * (r0 - r1) + dr0.y * (r2 - r1)) / d;
+    float y = (- dr1.x * (r0 - r1) - dr0.x * (r2 - r1)) / d;
 
     float r = length(p1 - float2(x, y));
-    if(1/r < _Threshold){
+    if(1/r < _Threshold.x || 1/r > _Threshold.y){
         return float4(p1.x, p1.y, 0, 0);
     }
     return float4(x, y, 0, r);
 }
 
-[numthreads(8,1,1)]
+[numthreads(32,1,1)]
 void Update (uint3 id : SV_DispatchThreadID)
 {
     uint index = id.x;

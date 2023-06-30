@@ -26,7 +26,9 @@ public class Waveform : MonoBehaviour
     ComputeShader cs;
 
     [SerializeField, Range(0, 10)]
-    float threshold;
+    float minThreshold;
+    [SerializeField, Range(0, 10)]
+    float maxThreshold;
     int updateKernel;
     GraphicsBuffer vertexData;
     GraphicsBuffer circleData;
@@ -62,15 +64,7 @@ public class Waveform : MonoBehaviour
         vfx.SetGraphicsBuffer(CircleProp, circleData);
         vfx.SetGraphicsBuffer(VertexProp, vertexData);
 
-        using (var vertices = CreateVertexArray(default(NativeSlice<float>)))
-        {
-            vertexData.SetData(vertices);
-            cs.SetBuffer(updateKernel, VertexProp, vertexData);
-            cs.SetBuffer(updateKernel, CircleProp, circleData);
-            cs.SetInt(CountProp, vertices.Length);
-            cs.SetFloat(ThresholdProp, threshold);
-            cs.Dispatch(updateKernel, vertices.Length / 8, 1, 1);
-        }
+        UpdateMesh(default(NativeSlice<float>));
     }
 
     void UpdateMesh(NativeSlice<float> source)
@@ -81,8 +75,8 @@ public class Waveform : MonoBehaviour
             cs.SetBuffer(updateKernel, VertexProp, vertexData);
             cs.SetBuffer(updateKernel, CircleProp, circleData);
             cs.SetInt(CountProp, vertices.Length);
-            cs.SetFloat(ThresholdProp, threshold);
-            cs.Dispatch(updateKernel, vertices.Length / 8, 1, 1);
+            cs.SetFloats(ThresholdProp, new float[2] { minThreshold, maxThreshold });
+            cs.Dispatch(updateKernel, vertices.Length / 32, 1, 1);
         }
     }
 
