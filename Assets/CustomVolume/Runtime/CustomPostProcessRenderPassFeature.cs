@@ -72,7 +72,7 @@ public class CustomPostProcessRenderPassFeature : ScriptableRendererFeature
         {
         }
 
-        public void Setup(in RenderTargetIdentifier colerTarget, ref RenderingData renderingData)
+        public void Setup(in RenderTargetIdentifier colerTarget, in RenderingData renderingData)
         {
             var cameradata = renderingData.cameraData;
             width = cameradata.camera.scaledPixelWidth;
@@ -328,14 +328,19 @@ public class CustomPostProcessRenderPassFeature : ScriptableRendererFeature
         customPostProcessSlicePass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
     }
 
+    public override void SetupRenderPasses(ScriptableRenderer renderer, in RenderingData renderingData)
+    {
+        customPostProcessSlicePass.Setup(renderer.cameraColorTargetHandle, renderingData);
+    }
+
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        var cameradata = renderingData.cameraData;
-        if (cameradata.isSceneViewCamera || cameradata.isPreviewCamera || cameradata.cameraType == CameraType.Reflection) return;
+        // var cameradata = renderingData.cameraData;
+        // if (cameradata.isSceneViewCamera || cameradata.isPreviewCamera || cameradata.cameraType == CameraType.Reflection) return;
 
         // customPostProcessSlicePass.Setup(finalBlit, ref renderingData);
 
-        customPostProcessSlicePass.Setup(renderer.cameraColorTarget, ref renderingData);
+        // customPostProcessSlicePass.Setup(cameradata.renderer.cameraColorTargetHandle, ref renderingData);
 
         renderer.EnqueuePass(customPostProcessSlicePass);
     }
