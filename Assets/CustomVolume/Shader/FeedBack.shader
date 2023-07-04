@@ -32,8 +32,8 @@ Shader "Hidden/Shader/FeedBack"
                 float4 color = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_BlitTexture, input.texcoord);
                 // float4 dest = SAMPLE_TEXTURE2D_X(_Dest, sampler_Dest, (input.texcoord - 0.5) * 0.5 + 0.5);
                 float4 dest = SAMPLE_TEXTURE2D_X(_Dest, sampler_Dest, input.texcoord);
-                // return lerp(color, dest, _Intensity);
-                return color + dest * _Intensity;
+                return lerp(color, dest, _Intensity);
+                // return color + dest * _Intensity;
             }
             ENDHLSL
         }
