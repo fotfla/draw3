@@ -36,6 +36,7 @@ public class Waveform : MonoBehaviour
     private readonly int CircleProp = Shader.PropertyToID("_CircleData");
     private readonly int CountProp = Shader.PropertyToID("_Count");
     private readonly int ThresholdProp = Shader.PropertyToID("_Threshold");
+    private readonly int TimeProp = Shader.PropertyToID("Time");
 
     void Start()
     {
@@ -44,7 +45,9 @@ public class Waveform : MonoBehaviour
 
     void Update()
     {
-        if (Time.frameCount % updateFrame == 0) UpdateMesh(audioLevelTracker.audioDataSlice);
+        var frameCount = Time.frameCount % updateFrame;
+        if (frameCount == 0) UpdateMesh(audioLevelTracker.audioDataSlice);
+        vfx.SetFloat(TimeProp, frameCount / (float)updateFrame);
     }
 
     void OnDestory()
