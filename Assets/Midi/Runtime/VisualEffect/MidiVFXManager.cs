@@ -21,7 +21,7 @@ public class MidiVFXManager : MonoBehaviour, IMidiInput
             var binder = v.GetPropertyBinders<MidiCCPropertyBinder>();
             foreach (var b in binder)
             {
-                binders.Add(b.number, b);
+                binders.Add(b.CCNumber, b);
             }
         }
 

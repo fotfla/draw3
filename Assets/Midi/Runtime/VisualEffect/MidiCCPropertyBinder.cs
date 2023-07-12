@@ -7,7 +7,10 @@ public class MidiCCPropertyBinder : VFXBinderBase
     [VFXPropertyBinding(nameof(System.Single))]
     public ExposedProperty valueProperty;
 
-    public byte number;
+    public byte CCNumber;
+
+    public float minValue = 0;
+    public float maxValue = 1;
     byte _value;
 
     public override bool IsValid(VisualEffect component)
@@ -17,12 +20,12 @@ public class MidiCCPropertyBinder : VFXBinderBase
 
     public override void UpdateBinding(VisualEffect component)
     {
-        component.SetFloat(valueProperty, _value / 127.0f);
+        component.SetFloat(valueProperty, (maxValue - minValue) * _value / 127.0f + minValue);
     }
 
     public override string ToString()
     {
-        return string.Format("Midi CC '{0} -> CC {1}'", valueProperty, number);
+        return string.Format("Midi CC '{0} -> CC {1}'", valueProperty, CCNumber);
     }
 
     public void SetValue(byte value)
