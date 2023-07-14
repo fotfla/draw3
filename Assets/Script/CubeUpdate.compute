@@ -1,0 +1,51 @@
+#pragma kernel Init
+#pragma kernel Update
+
+#include "Packages/fotfla/ShaderLibrary/Noise.cginc"
+
+struct ParticleData{
+    float3 position;
+    float2 scale;
+};
+
+RWStructuredBuffer<ParticleData> ParticleBuffer;
+RWStructuredBuffer<ParticleData> NextParticleBuffer;
+uint Count;
+
+uint Seed;
+float Time;
+float _DeltaTime;
+
+float3 AreaSize;
+float4 ScaleSize;
+
+float map(float x , float2 s){
+    return (s.y - s.x) * x + s.x;
+}
+
+[numthreads(8,1,1)]
+void Init(uint3 id : SV_DispatchThreadID){
+    uint index = id.x;
+    if(index > Count) return;
+
+    float3 p = hash31(id.x + Seed) - 0.5;
+    float2 s = hash21(id.x + Seed);
+    ParticleBuffer[index].position = p * AreaSize;
+    ParticleBuffer[index].scale = float2(map(s.x, ScaleSize.xy), map(s.y, ScaleSize.zw));
+}
+
+[numthreads(8,1,1)]
+void Update (uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    if(index > Count) return;
+
+    float3 pos = ParticleBuffer[index].position;
+    float2 scale = ParticleBuffer[index].scale;
+
+    float3 npos = NextParticleBuffer[index].position;
+    float2 nscale = NextParticleBuffer[index].scale;
+
+    ParticleBuffer[index].position = lerp(pos, npos, _DeltaTime);
+    ParticleBuffer[index].scale = lerp(scale, nscale, _DeltaTime);
+}
