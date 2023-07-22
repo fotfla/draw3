@@ -106,4 +106,14 @@ public class Waveform : MonoBehaviour
     {
         return new NativeArray<int>(Enumerable.Range(0, vertexCount).ToArray(), Allocator.Temp);
     }
+
+    public void SetMinValue(byte value)
+    {
+        minThreshold = (value / 127.0f) * 10;
+    }
+
+    public void SetMaxValue(byte value)
+    {
+        maxThreshold = (value / 127.0f) * 10;
+    }
 }

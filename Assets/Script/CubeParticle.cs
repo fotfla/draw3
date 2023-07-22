@@ -74,7 +74,6 @@ public class CubeParticle : MonoBehaviour
         StopAllCoroutines();
         ParticleInit(nextParticleBuffer);
         StartCoroutine(nameof(ParticleUpdate));
-        Debug.Log("Kick");
     }
 
     IEnumerator ParticleUpdate()

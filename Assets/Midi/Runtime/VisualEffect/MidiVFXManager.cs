@@ -21,7 +21,8 @@ public class MidiVFXManager : MonoBehaviour, IMidiInput
             var binder = v.GetPropertyBinders<MidiCCPropertyBinder>();
             foreach (var b in binder)
             {
-                binders.Add(b.CCNumber, b);
+                // binders.Add(b.CCNumber, b);
+                binders.TryAdd(b.CCNumber, b);
             }
         }
 
@@ -69,20 +70,26 @@ public class MidiVFXManager : MonoBehaviour, IMidiInput
 
     public void OnMidiNoteOff(byte channel, byte note)
     {
-        if (components.TryGetValue(note, out VFXMidiEventBinder binder))
+        if (components != null)
         {
-            binder.SetValue();
+            if (components.TryGetValue(note, out VFXMidiEventBinder binder))
+            {
+                binder.SetValue();
+            }
         }
     }
 
     public void OnMidiNoteOn(byte channel, byte note, byte velocity)
     {
-        if (components.TryGetValue(note, out VFXMidiEventBinder binder))
+        if (components != null)
         {
-            binder.SetValue(velocity);
-            if (binder.type == MidiBehaviorType.Toggle)
+            if (components.TryGetValue(note, out VFXMidiEventBinder binder))
             {
-                midiOutput.SendNoteOn(0, note, !binder.bToggle ? (int)binder.color : (int)LaunchPadOutColor.Red, MidiOutSetting.Launchpad);
+                binder.SetValue(velocity);
+                if (binder.type == MidiBehaviorType.Toggle)
+                {
+                    midiOutput.SendNoteOn(0, note, !binder.bToggle ? (int)binder.color : (int)LaunchPadOutColor.Red, MidiOutSetting.Launchpad);
+                }
             }
         }
     }
