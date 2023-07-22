@@ -38,6 +38,9 @@ public class Waveform : MonoBehaviour
     private readonly int ThresholdProp = Shader.PropertyToID("_Threshold");
     private readonly int TimeProp = Shader.PropertyToID("Time");
 
+    [SerializeField]
+    float animationSpeed = 0.1f;
+
     void Start()
     {
         InitializeMesh();
@@ -47,7 +50,7 @@ public class Waveform : MonoBehaviour
     {
         var frameCount = Time.frameCount % updateFrame;
         if (frameCount == 0) UpdateMesh(audioLevelTracker.audioDataSlice);
-        vfx.SetFloat(TimeProp, frameCount / (float)updateFrame);
+        vfx.SetFloat(TimeProp, (frameCount / (float)updateFrame) * animationSpeed);
     }
 
     void OnDestory()
@@ -105,6 +108,11 @@ public class Waveform : MonoBehaviour
     NativeArray<int> CreateIndexArray()
     {
         return new NativeArray<int>(Enumerable.Range(0, vertexCount).ToArray(), Allocator.Temp);
+    }
+
+    public void SetUpdateFrame(byte value)
+    {
+        updateFrame = (uint)(value * 2 + 1);
     }
 
     public void SetMinValue(byte value)
