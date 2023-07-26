@@ -16,8 +16,10 @@ public class EdgeDetectionRenderPassFeature : ScriptableRendererFeature
         Material material;
 
         private readonly int IntensityProp = Shader.PropertyToID("_Intensity");
+        private readonly int DepthProp = Shader.PropertyToID("_Depth");
 
-        public void Setup(RTHandle source, in RenderingData renderingData){
+        public void Setup(RTHandle source, in RenderingData renderingData)
+        {
             material = CoreUtils.CreateEngineMaterial("Hidden/Shader/EdgeDetection");
             this.source = source;
         }
@@ -31,7 +33,7 @@ public class EdgeDetectionRenderPassFeature : ScriptableRendererFeature
             var stack = VolumeManager.instance.stack;
             edgeDetection = stack.GetComponent<EdgeDetection>();
 
-            if(edgeDetection.IsActive())
+            if (edgeDetection.IsActive())
             {
                 var cmd = CommandBufferPool.Get();
                 Render(cmd, ref renderingData);
@@ -50,11 +52,13 @@ public class EdgeDetectionRenderPassFeature : ScriptableRendererFeature
             using (new ProfilingScope(cmd, _profilingSampler))
             {
                 material.SetFloat(IntensityProp, edgeDetection.intensity.value);
+                material.SetInt(DepthProp, edgeDetection.depth.value);
                 Blitter.BlitCameraTexture(cmd, source, source, material, 0);
             }
         }
 
-        void Dispose(){
+        void Dispose()
+        {
             CoreUtils.Destroy(material);
         }
     }

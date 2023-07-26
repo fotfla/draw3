@@ -7,7 +7,8 @@ namespace UnityEngine.Rendering.Universal
     {
         [Tooltip("Controls the intensity of the effect.")]
         public ClampedFloatParameter intensity = new ClampedFloatParameter(0f, 0f, 1f);
-        public bool IsActive() => intensity.value > 0f;
+        public IntParameter depth = new IntParameter(1);
+        public bool IsActive() => intensity.value > 0f && depth.value > 0;
         public bool IsTileCompatible() => false;
     }
 }
