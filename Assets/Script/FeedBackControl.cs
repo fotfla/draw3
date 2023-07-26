@@ -15,7 +15,7 @@ public class FeedBackControl : MonoBehaviour, IMidiInput
     void Start()
     {
         var profile = GetComponent<Volume>().profile;
-        profile.TryGet<FeedBack>(out feedBack);
+        profile.TryGet(out feedBack);
     }
 
     public void OnMidiControlChange(byte channel, byte number, byte value)
