@@ -3,7 +3,7 @@ using System;
 namespace UnityEngine.Rendering.Universal
 {
     [Serializable, VolumeComponentMenu("Post-processing/Custom/EdgeDitection")]
-    public sealed class EdgeDitectionPostProcessVolume : VolumeComponent, IPostProcessComponent
+    public sealed class EdgeDetection : VolumeComponent, IPostProcessComponent
     {
         [Tooltip("Controls the intensity of the effect.")]
         public ClampedFloatParameter intensity = new ClampedFloatParameter(0f, 0f, 1f);

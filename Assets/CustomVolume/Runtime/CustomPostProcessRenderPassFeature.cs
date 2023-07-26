@@ -12,7 +12,7 @@ public class CustomPostProcessRenderPassFeature : ScriptableRendererFeature
         private WorldVoroNoisePostProcessVolume worldVoroNoise;
         private WorldDistortionPostProcessVolume worldDistortion;
         private DistortionPostProcessVolume distortion;
-        private EdgeDitectionPostProcessVolume edgeDetection;
+        private EdgeDetection edgeDetection;
         private GlitchPostProcessVolume glitch;
         private UVShiftPostProcessVolume uvShift;
         private ScanLinePostProcessVolume scanLine;
@@ -53,7 +53,7 @@ public class CustomPostProcessRenderPassFeature : ScriptableRendererFeature
             worldVoroNoise = stack.GetComponent<WorldVoroNoisePostProcessVolume>();
             worldDistortion = stack.GetComponent<WorldDistortionPostProcessVolume>();
             distortion = stack.GetComponent<DistortionPostProcessVolume>();
-            edgeDetection = stack.GetComponent<EdgeDitectionPostProcessVolume>();
+            edgeDetection = stack.GetComponent<EdgeDetection>();
             glitch = stack.GetComponent<GlitchPostProcessVolume>();
             fluid = stack.GetComponent<FluidPostProcessVolume>();
             pixelsort = stack.GetComponent<PixelSorterPostProcessVolume>();

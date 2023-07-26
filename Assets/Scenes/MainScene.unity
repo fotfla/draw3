@@ -729,13 +729,14 @@ GameObject:
   m_Component:
   - component: {fileID: 857463498}
   - component: {fileID: 857463497}
+  - component: {fileID: 857463499}
   m_Layer: 0
   m_Name: PostEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &857463497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -768,6 +769,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &857463499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 857463496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc120685d7d45844d9d1fbf19a4bbc86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ccNumber: 81
 --- !u!1 &892566247
 GameObject:
   m_ObjectHideFlags: 0
@@ -1112,6 +1126,7 @@ MonoBehaviour:
   cs: {fileID: 7200000, guid: 9ae1f5595ba6bda44ac21b7ced0514ac, type: 3}
   minThreshold: 1.89
   maxThreshold: 4.92
+  animationSpeed: 0.1
 --- !u!114 &1004457608
 MonoBehaviour:
   m_ObjectHideFlags: 0

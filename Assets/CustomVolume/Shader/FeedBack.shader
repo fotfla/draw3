@@ -1,13 +1,9 @@
 Shader "Hidden/Shader/FeedBack"
 {
-    Properties
-    {
-    }
     SubShader
     {
         Tags { "RenderType"="Opaque" "RenderPipeline" = "UniversalPipeline"}
-        LOD 100
-        ZWrite Off Cull Off
+        ZWrite Off Cull Off ZTest Always Blend Off
         Pass
         {
             Name "FeedBackPass"
@@ -29,11 +25,11 @@ Shader "Hidden/Shader/FeedBack"
 
             half4 frag (Varyings input) : SV_Target
             {
-                float4 color = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_BlitTexture, input.texcoord);
-                // float4 dest = SAMPLE_TEXTURE2D_X(_Dest, sampler_Dest, (input.texcoord - 0.5) * 0.5 + 0.5);
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+
+                float4 color = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_BlitTexture, input.texcoord);           
                 float4 dest = SAMPLE_TEXTURE2D_X(_Dest, sampler_Dest, input.texcoord);
                 return lerp(color, dest, _Intensity);
-                // return color + dest * _Intensity;
             }
             ENDHLSL
         }
