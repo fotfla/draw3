@@ -1,0 +1,40 @@
+#pragma kernel Init
+#pragma kernel Update
+
+#include "Packages/fotfla/ShaderLibrary/Noise.cginc"
+
+RWStructuredBuffer<float3> ParticleBuffer;
+RWStructuredBuffer<float3> NextBuffer;
+
+uint Count;
+uint Seed;
+
+float GridSize;
+float3 AreaSize;
+
+float DeltaTime;
+
+[numthreads(8, 1, 1)]
+void Init(uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    if (index > Count)
+        return;
+    
+    float3 p = hash31(id.x + Seed) - 0.5;
+    p = floor(p * GridSize) % GridSize;
+    ParticleBuffer[index] = p;
+}
+
+[numthreads(8, 1, 1)]
+void Update(uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    if (index > Count)
+        return;
+    
+    float3 pos = ParticleBuffer[index];
+    float3 npos = NextBuffer[index];
+
+    ParticleBuffer[index] = lerp(pos, npos, DeltaTime);
+}

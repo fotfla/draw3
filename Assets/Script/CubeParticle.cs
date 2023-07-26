@@ -89,7 +89,7 @@ public class CubeParticle : MonoBehaviour
 
     void ParticleInit(GraphicsBuffer particleBuffer)
     {
-        cs.SetInt(SeedProp, random.NextInt());
+        cs.SetInt(SeedProp, math.abs(random.NextInt()));
         cs.SetBuffer(0, BufferProp, particleBuffer);
         cs.Dispatch(0, count / 8, 1, 1);
     }
