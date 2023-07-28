@@ -11,17 +11,26 @@ public class GridParticle : MonoBehaviour
     VisualEffect vfx;
 
     [SerializeField]
-    int gridSize;
+    KickTrigger kickTrigger;
+
+    [SerializeField]
+    float gridSize;
     [SerializeField]
     Vector3 areaSize;
 
     int count = 128;
 
+    [VFXType(VFXTypeAttribute.Usage.GraphicsBuffer)]
+    struct GridParticleData
+    {
+        public Vector3 position;
+        public Vector3 prevPosition;
+        public Vector3 direction;
+    };
+
     GraphicsBuffer buffer;
-    GraphicsBuffer prevBuffer;
 
     private readonly int BufferProp = Shader.PropertyToID("ParticleBuffer");
-    private readonly int PrevBufferProp = Shader.PropertyToID("PrevBuffer");
 
     private readonly int CountProp = Shader.PropertyToID("Count");
     private readonly int SeedProp = Shader.PropertyToID("Seed");
@@ -33,25 +42,38 @@ public class GridParticle : MonoBehaviour
     ComputeShader cs;
 
     int initKernel;
+    int directionUpdateKernel;
     int updateKernel;
 
     Random rand;
 
     private void Start()
     {
-        rand = new Random();
+        rand = new Random(5423);
 
         initKernel = cs.FindKernel("Init");
+        directionUpdateKernel = cs.FindKernel("DirectionUpdate");
         updateKernel = cs.FindKernel("Update");
 
-        buffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, count, sizeof(float) * 3);
-        prevBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, count, sizeof(float) * 3);
+        buffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, count, sizeof(float) * 9);
 
         vfx.SetGraphicsBuffer(BufferProp, buffer);
 
         cs.SetInt(CountProp, count);
 
         ParticleInit(buffer);
+
+        kickTrigger.onKickOn += OnKick;
+    }
+
+    private void OnKick(float audioLevel)
+    {
+        cs.SetFloat(GridProp, gridSize);
+        cs.SetVector(AreaProp, areaSize);
+
+        StopAllCoroutines();
+        DirectionUpdate();
+        StartCoroutine(nameof(ParticleUpdate));
     }
 
     private void Update()
@@ -66,26 +88,30 @@ public class GridParticle : MonoBehaviour
         cs.Dispatch(initKernel, count / 8, 1, 1);
     }
 
+    void DirectionUpdate()
+    {
+        cs.SetInt(SeedProp, math.abs(rand.NextInt()));
+        cs.SetBuffer(directionUpdateKernel, BufferProp, buffer);
+        cs.Dispatch(directionUpdateKernel, count / 8, 1, 1);
+    }
+
     IEnumerator ParticleUpdate()
     {
         var time = 0.0f;
-        while (time < 1)
+        while (time <= 1)
         {
-            time += Time.deltaTime;
-            ParticleBufferUpdate();
+            if (time > 1) time = 1;
+            ParticleBufferUpdate(time);
+            time += Time.deltaTime * 10;
             yield return null;
         }
     }
 
-    void ParticleBufferUpdate()
+    void ParticleBufferUpdate(float time)
     {
-        cs.SetFloat(GridProp, gridSize);
-        cs.SetVector(AreaProp, areaSize);
-
-        cs.SetFloat(TimeProp, Time.deltaTime * 5);
+        cs.SetFloat(TimeProp, Mathf.Exp(time) / Mathf.Exp(1) - 1);
 
         cs.SetBuffer(updateKernel, BufferProp, buffer);
-        cs.SetBuffer(updateKernel, PrevBufferProp, prevBuffer);
         cs.Dispatch(updateKernel, count / 8, 1, 1);
     }
 }

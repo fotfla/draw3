@@ -1703,7 +1703,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &1600554071
 Canvas:
   m_ObjectHideFlags: 0
@@ -2241,11 +2241,10 @@ GameObject:
   - component: {fileID: 1982963306}
   - component: {fileID: 1982963310}
   - component: {fileID: 1982963309}
-  - component: {fileID: 1982963308}
-  - component: {fileID: 1982963307}
   - component: {fileID: 1982963311}
+  - component: {fileID: 1982963312}
   m_Layer: 0
-  m_Name: CubesVFX
+  m_Name: GridVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2259,47 +2258,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1982963305}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1131818389}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1982963307
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1982963305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00f34cee394e28149b9f4b7734019452, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  valueProperty:
-    m_Name: Seed
-  audioLevelPorperty:
-    m_Name: AudioLevel
-  trigger: {fileID: 1041446895}
-  AttackSpeed: 2
---- !u!114 &1982963308
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1982963305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdafc37f32b176349b1684c4455b98e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ExecuteInEditor: 1
-  m_Bindings:
-  - {fileID: 1982963307}
-  m_VisualEffect: {fileID: 1982963310}
 --- !u!73398921 &1982963309
 VFXRenderer:
   serializedVersion: 1
@@ -2348,7 +2313,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1982963305}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: b17b7c4d0a41bec4ca812f03bdfe0e45, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: ecad2ed33c5b09a47ab1ee72f89b4c0f, type: 3}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -2366,6 +2331,9 @@ VisualEffect:
         m_Overridden: 1
       - m_Value: 10
         m_Name: Speed
+        m_Overridden: 1
+      - m_Value: 2.5
+        m_Name: GridSize
         m_Overridden: 1
     m_Vector2f:
       m_Array: []
@@ -2408,3 +2376,20 @@ MonoBehaviour:
   color: 30
   type: 1
   bToggle: 0
+--- !u!114 &1982963312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982963305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83333e8ee8bd1ea41bb3b76158a7dc7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vfx: {fileID: 1982963310}
+  kickTrigger: {fileID: 1041446895}
+  gridSize: 0.5
+  areaSize: {x: 5, y: 5, z: 0}
+  cs: {fileID: 7200000, guid: 2e57bfdb9e0838243a9cfd0ce9fa6b71, type: 3}

@@ -1,10 +1,17 @@
 #pragma kernel Init
+#pragma kernel DirectionUpdate
 #pragma kernel Update
 
 #include "Packages/fotfla/ShaderLibrary/Noise.cginc"
 
-RWStructuredBuffer<float3> ParticleBuffer;
-RWStructuredBuffer<float3> NextBuffer;
+struct ParticleData
+{
+    float3 position;
+    float3 prevPosition;
+    float3 direction;
+};
+
+RWStructuredBuffer<ParticleData> ParticleBuffer;
 
 uint Count;
 uint Seed;
@@ -22,8 +29,36 @@ void Init(uint3 id : SV_DispatchThreadID)
         return;
     
     float3 p = hash31(id.x + Seed) - 0.5;
-    p = floor(p * GridSize) % GridSize;
-    ParticleBuffer[index] = p;
+    p = floor(p * AreaSize) % GridSize;
+    ParticleBuffer[index].position = p;
+}
+
+[numthreads(8, 1, 1)]
+void DirectionUpdate(uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    if (index > Count)
+        return;
+    
+    float3 p = hash31(id.x + Seed) - 0.5;
+    float3 d = 0;
+    if (abs(p.x) < abs(p.y))
+    {
+        if (abs(p.y) < abs(p.z))
+        {
+            d.z = 1 * sign(p.z);
+        }
+        else
+        {
+            d.y = 1 * sign(p.y);
+        }
+    }
+    else
+    {
+        d.x = 1 * sign(p.x);
+    }
+    ParticleBuffer[index].direction = d;
+    ParticleBuffer[index].prevPosition = ParticleBuffer[index].position;
 }
 
 [numthreads(8, 1, 1)]
@@ -33,8 +68,8 @@ void Update(uint3 id : SV_DispatchThreadID)
     if (index > Count)
         return;
     
-    float3 pos = ParticleBuffer[index];
-    float3 npos = NextBuffer[index];
-
-    ParticleBuffer[index] = lerp(pos, npos, DeltaTime);
+    float3 pos = ParticleBuffer[index].prevPosition;
+    float3 npos = pos + ParticleBuffer[index].direction * GridSize;
+    
+    ParticleBuffer[index].position = lerp(pos, npos, DeltaTime);
 }
