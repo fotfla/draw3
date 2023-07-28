@@ -21,6 +21,11 @@ float3 AreaSize;
 
 float DeltaTime;
 
+float3 mod(float3 a, float3 b)
+{
+    return floor(a / b) - b;
+}
+
 [numthreads(8, 1, 1)]
 void Init(uint3 id : SV_DispatchThreadID)
 {
@@ -29,8 +34,10 @@ void Init(uint3 id : SV_DispatchThreadID)
         return;
     
     float3 p = hash31(id.x + Seed) - 0.5;
-    p = floor(p * AreaSize) % GridSize;
+    p = floor(p * AreaSize / GridSize) * GridSize;
     ParticleBuffer[index].position = p;
+    ParticleBuffer[index].direction = float3(1, 0, 0);
+    ParticleBuffer[index].prevPosition = p;
 }
 
 [numthreads(8, 1, 1)]
@@ -58,7 +65,7 @@ void DirectionUpdate(uint3 id : SV_DispatchThreadID)
         d.x = 1 * sign(p.x);
     }
     ParticleBuffer[index].direction = d;
-    ParticleBuffer[index].prevPosition = ParticleBuffer[index].position;
+    ParticleBuffer[index].prevPosition = ParticleBuffer[index].position + d * GridSize;
 }
 
 [numthreads(8, 1, 1)]

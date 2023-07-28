@@ -57,11 +57,14 @@ public class GridParticle : MonoBehaviour
 
         buffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, count, sizeof(float) * 9);
 
-        vfx.SetGraphicsBuffer(BufferProp, buffer);
-
         cs.SetInt(CountProp, count);
+        cs.SetFloat(GridProp, gridSize);
+        cs.SetVector(AreaProp, areaSize);
 
         ParticleInit(buffer);
+        DirectionUpdate();
+
+        vfx.SetGraphicsBuffer(BufferProp, buffer);
 
         kickTrigger.onKickOn += OnKick;
     }
@@ -71,8 +74,6 @@ public class GridParticle : MonoBehaviour
         cs.SetFloat(GridProp, gridSize);
         cs.SetVector(AreaProp, areaSize);
 
-        StopAllCoroutines();
-        DirectionUpdate();
         StartCoroutine(nameof(ParticleUpdate));
     }
 
@@ -84,7 +85,8 @@ public class GridParticle : MonoBehaviour
     void ParticleInit(GraphicsBuffer particleBuffer)
     {
         cs.SetInt(SeedProp, math.abs(rand.NextInt()));
-        cs.SetBuffer(initKernel, BufferProp, particleBuffer);
+
+        cs.SetBuffer(initKernel, BufferProp, buffer);
         cs.Dispatch(initKernel, count / 8, 1, 1);
     }
 
@@ -98,13 +100,14 @@ public class GridParticle : MonoBehaviour
     IEnumerator ParticleUpdate()
     {
         var time = 0.0f;
-        while (time <= 1)
+        while (time < 1)
         {
-            if (time > 1) time = 1;
             ParticleBufferUpdate(time);
             time += Time.deltaTime * 10;
             yield return null;
         }
+        ParticleBufferUpdate(1);
+        DirectionUpdate();
     }
 
     void ParticleBufferUpdate(float time)
