@@ -136,6 +136,9 @@ GameObject:
   - component: {fileID: 198450439}
   - component: {fileID: 198450438}
   - component: {fileID: 198450441}
+  - component: {fileID: 198450443}
+  - component: {fileID: 198450442}
+  - component: {fileID: 198450444}
   m_Layer: 0
   m_Name: QuadsBW
   m_TagString: Untagged
@@ -175,7 +178,7 @@ MonoBehaviour:
   count: 128
   cs: {fileID: 7200000, guid: 8da00318dc004094ab4a74b802a4b45b, type: 3}
   areaSize: {x: 5, y: 3, z: 3}
-  scaleSize: {x: 0.1, y: 3, z: 0.1, w: 3}
+  scaleSize: {x: 0.1, y: 4, z: 0.1, w: 4}
   attackSpeed: 10
 --- !u!73398921 &198450439
 VFXRenderer:
@@ -234,7 +237,13 @@ VisualEffect:
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 1
+        m_Name: Rate
+        m_Overridden: 1
+      - m_Value: 1
+        m_Name: MaxLifetime
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -276,6 +285,57 @@ MonoBehaviour:
   color: 30
   type: 1
   bToggle: 0
+--- !u!114 &198450442
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198450436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e1ad8897f75e4f458a606c5ae9663b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  valueProperty:
+    m_Name: Rate
+  CCNumber: 17
+  minValue: 1
+  maxValue: 32
+--- !u!114 &198450443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198450436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdafc37f32b176349b1684c4455b98e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ExecuteInEditor: 1
+  m_Bindings:
+  - {fileID: 198450442}
+  - {fileID: 198450444}
+  m_VisualEffect: {fileID: 198450440}
+--- !u!114 &198450444
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198450436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e1ad8897f75e4f458a606c5ae9663b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  valueProperty:
+    m_Name: MaxLifetime
+  CCNumber: 18
+  minValue: 1
+  maxValue: 4
 --- !u!1 &250202228
 GameObject:
   m_ObjectHideFlags: 0
