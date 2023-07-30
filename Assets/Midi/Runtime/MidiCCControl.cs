@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MidiCCControl : MonoBehaviour, IMidiInput
 {
-    Dictionary<byte, MidiCCComponent> components;
+    Dictionary<byte, UnityEvent<byte>> components;
 
     void Start()
     {
@@ -13,20 +14,22 @@ public class MidiCCControl : MonoBehaviour, IMidiInput
 
     void Init()
     {
-        components = new Dictionary<byte, MidiCCComponent>();
+        components = new Dictionary<byte, UnityEvent<byte>>();
         var ccs = FindObjectsOfType<MidiCCComponent>();
         foreach (var cc in ccs)
         {
-            components.TryAdd(cc.GetCCNumber(), cc);
+            foreach (var trigger in cc.GetTrigger())
+            {
+                components.TryAdd(trigger.number, trigger.Event);
+            }
         }
     }
 
     public void OnMidiControlChange(byte channel, byte number, byte value)
     {
-        Debug.Log("CC");
-        if (components.TryGetValue(number, out MidiCCComponent c))
+        if (components.TryGetValue(number, out UnityEvent<byte> ccEvent))
         {
-            c.Event?.Invoke(value);
+            ccEvent?.Invoke(value);
         }
     }
 

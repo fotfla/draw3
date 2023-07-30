@@ -5,13 +5,11 @@ using UnityEngine.Events;
 
 public class MidiCCComponent : MonoBehaviour
 {
-    [SerializeField]
-    byte number;
+    [SerializeField, CCIndex]
+    MidiInputCCTrigger[] ccTriggers;
 
-    public UnityEvent<byte> Event;
-
-    public byte GetCCNumber()
+    public MidiInputCCTrigger[] GetTrigger()
     {
-        return number;
+        return ccTriggers;
     }
 }

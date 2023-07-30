@@ -25,13 +25,13 @@ public class FeedBackRenderPassFeature : ScriptableRendererFeature
 
             var desc = renderingData.cameraData.cameraTargetDescriptor;
             desc.depthBufferBits = 0;
-            desc.colorFormat = RenderTextureFormat.ARGB32;
+            desc.colorFormat = RenderTextureFormat.RGB111110Float;
             RenderingUtils.ReAllocateIfNeeded(ref destination, desc);
         }
 
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
-            ConfigureTarget(destination);
+            ConfigureTarget(source);
         }
 
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
@@ -64,8 +64,7 @@ public class FeedBackRenderPassFeature : ScriptableRendererFeature
                 material.SetTexture(DestProp, destination);
                 material.SetFloat(IntensityProp, feedBack.intensity.value);
                 Blitter.BlitCameraTexture(cmd, source, source, material, 0);
-
-                Blitter.BlitCameraTexture(cmd, source, destination);
+                Blitter.BlitCameraTexture(cmd, destination, destination, material, 1);
             }
         }
 
@@ -81,7 +80,6 @@ public class FeedBackRenderPassFeature : ScriptableRendererFeature
     public override void Create()
     {
         m_ScriptablePass = new FeedBackRenderPass();
-        // m_ScriptablePass.renderPassEvent = RenderPassEvent.AfterRenderingPrePasses;
         m_ScriptablePass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
     }
 
