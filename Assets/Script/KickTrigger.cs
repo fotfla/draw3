@@ -40,4 +40,9 @@ public class KickTrigger : MonoBehaviour
     {
         threshold = value / 127.0f;
     }
+
+    public float GetThreshold()
+    {
+        return threshold;
+    }
 }
