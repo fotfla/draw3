@@ -46,26 +46,22 @@ public class FeedBackRenderPassFeature : ScriptableRendererFeature
             if (feedBack.IsActive())
             {
                 var cmd = CommandBufferPool.Get();
-                Render(cmd, ref renderingData);
-                context.ExecuteCommandBuffer(cmd);
-                cmd.Clear();
+                using (new ProfilingScope(cmd, _profilingSampler))
+                {
+                    material.SetTexture(DestProp, destination);
+                    material.SetFloat(IntensityProp, feedBack.intensity.value);
+                    Blitter.BlitCameraTexture(cmd, source, source, material, 0);
+                    Blitter.BlitCameraTexture(cmd, source, destination, material, 1);
+                    //Blitter.BlitCameraTexture(cmd, source, destination);
+                    context.ExecuteCommandBuffer(cmd);
+                    cmd.Clear();
+                }
                 CommandBufferPool.Release(cmd);
             }
         }
 
         public override void OnCameraCleanup(CommandBuffer cmd)
         {
-        }
-
-        public void Render(CommandBuffer cmd, ref RenderingData renderingData)
-        {
-            using (new ProfilingScope(cmd, _profilingSampler))
-            {
-                material.SetTexture(DestProp, destination);
-                material.SetFloat(IntensityProp, feedBack.intensity.value);
-                Blitter.BlitCameraTexture(cmd, source, source, material, 0);
-                Blitter.BlitCameraTexture(cmd, destination, destination, material, 1);
-            }
         }
 
         void Dispose()
@@ -91,6 +87,7 @@ public class FeedBackRenderPassFeature : ScriptableRendererFeature
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
+        if (!renderingData.cameraData.postProcessEnabled) return;
         renderer.EnqueuePass(m_ScriptablePass);
     }
 }

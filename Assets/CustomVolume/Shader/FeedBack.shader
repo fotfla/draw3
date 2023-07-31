@@ -15,8 +15,8 @@ Shader "Hidden/Shader/FeedBack"
 
             SAMPLER(sampler_BlitTexture);
 
-            TEXTURE2D_X(_CameraColorTexture);
-            SAMPLER(sampler_CameraColorTexture);
+            //TEXTURE2D_X(_CameraColorTexture);
+            //SAMPLER(sampler_CameraColorTexture);
 
             TEXTURE2D_X(_Dest);
             SAMPLER(sampler_Dest);
@@ -31,9 +31,9 @@ Shader "Hidden/Shader/FeedBack"
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
                 float4 color = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_BlitTexture, input.texcoord);
-                float4 color0 = SAMPLE_TEXTURE2D_X(_CameraColorTexture, sampler_CameraColorTexture, input.texcoord);
+                //float4 color0 = SAMPLE_TEXTURE2D_X(_CameraColorTexture, sampler_CameraColorTexture, input.texcoord);
                 float4 dest = SAMPLE_TEXTURE2D_X(_Dest, sampler_Dest, input.texcoord);
-                return lerp(color0, dest, _Intensity);
+                return lerp(color, dest, _Intensity);
             }
             ENDHLSL
         }

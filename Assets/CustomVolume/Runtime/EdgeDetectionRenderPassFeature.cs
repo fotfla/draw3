@@ -36,25 +36,20 @@ public class EdgeDetectionRenderPassFeature : ScriptableRendererFeature
             if (edgeDetection.IsActive())
             {
                 var cmd = CommandBufferPool.Get();
-                Render(cmd, ref renderingData);
-                context.ExecuteCommandBuffer(cmd);
-                cmd.Clear();
+                using (new ProfilingScope(cmd, _profilingSampler))
+                {
+                    material.SetFloat(IntensityProp, edgeDetection.intensity.value);
+                    material.SetInt(DepthProp, edgeDetection.depth.value);
+                    Blitter.BlitCameraTexture(cmd, source, source, material, 0);
+                    context.ExecuteCommandBuffer(cmd);
+                    cmd.Clear();
+                }
                 CommandBufferPool.Release(cmd);
             }
         }
 
         public override void OnCameraCleanup(CommandBuffer cmd)
         {
-        }
-
-        public void Render(CommandBuffer cmd, ref RenderingData renderingData)
-        {
-            using (new ProfilingScope(cmd, _profilingSampler))
-            {
-                material.SetFloat(IntensityProp, edgeDetection.intensity.value);
-                material.SetInt(DepthProp, edgeDetection.depth.value);
-                Blitter.BlitCameraTexture(cmd, source, source, material, 0);
-            }
         }
 
         void Dispose()
@@ -80,6 +75,7 @@ public class EdgeDetectionRenderPassFeature : ScriptableRendererFeature
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
+        if (!renderingData.cameraData.postProcessEnabled) return;
         renderer.EnqueuePass(m_ScriptablePass);
     }
 }
