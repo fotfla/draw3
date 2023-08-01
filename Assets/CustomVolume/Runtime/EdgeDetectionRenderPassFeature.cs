@@ -41,9 +41,9 @@ public class EdgeDetectionRenderPassFeature : ScriptableRendererFeature
                     material.SetFloat(IntensityProp, edgeDetection.intensity.value);
                     material.SetInt(DepthProp, edgeDetection.depth.value);
                     Blitter.BlitCameraTexture(cmd, source, source, material, 0);
-                    context.ExecuteCommandBuffer(cmd);
-                    cmd.Clear();
                 }
+                context.ExecuteCommandBuffer(cmd);
+                cmd.Clear();
                 CommandBufferPool.Release(cmd);
             }
         }
@@ -63,7 +63,6 @@ public class EdgeDetectionRenderPassFeature : ScriptableRendererFeature
     public override void Create()
     {
         m_ScriptablePass = new EdgeDetectionRenderPass();
-
         m_ScriptablePass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
     }
 

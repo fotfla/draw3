@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.Experimental.Rendering;
 
 public class FeedBackRenderPassFeature : ScriptableRendererFeature
 {
@@ -11,6 +10,7 @@ public class FeedBackRenderPassFeature : ScriptableRendererFeature
 
         RTHandle source;
         RTHandle destination;
+        RTHandle copy;
 
         FeedBack feedBack;
 
@@ -24,14 +24,8 @@ public class FeedBackRenderPassFeature : ScriptableRendererFeature
             this.source = source;
 
             var desc = renderingData.cameraData.cameraTargetDescriptor;
-            desc.depthBufferBits = 0;
-            desc.colorFormat = RenderTextureFormat.RGB111110Float;
-            RenderingUtils.ReAllocateIfNeeded(ref destination, desc);
-        }
-
-        public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
-        {
-            ConfigureTarget(source);
+            desc.depthBufferBits = (int)DepthBits.None;
+            RenderingUtils.ReAllocateIfNeeded(ref destination, desc, name: "_Dest");
         }
 
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
@@ -52,10 +46,10 @@ public class FeedBackRenderPassFeature : ScriptableRendererFeature
                     material.SetFloat(IntensityProp, feedBack.intensity.value);
                     Blitter.BlitCameraTexture(cmd, source, source, material, 0);
                     Blitter.BlitCameraTexture(cmd, source, destination, material, 1);
-                    //Blitter.BlitCameraTexture(cmd, source, destination);
-                    context.ExecuteCommandBuffer(cmd);
-                    cmd.Clear();
+                    //Blitter.BlitCameraTexture(cmd, source, source);
                 }
+                context.ExecuteCommandBuffer(cmd);
+                cmd.Clear();
                 CommandBufferPool.Release(cmd);
             }
         }

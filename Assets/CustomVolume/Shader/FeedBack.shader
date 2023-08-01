@@ -49,13 +49,16 @@ Shader "Hidden/Shader/FeedBack"
             TEXTURE2D_X(_CameraColorTexture);
             SAMPLER(sampler_CameraColorTexture);
 
+           SAMPLER(sampler_BlitTexture);
+
             #pragma vertex Vert
             #pragma fragment frag
 
             half4 frag (Varyings input) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-                return SAMPLE_TEXTURE2D_X(_CameraColorTexture, sampler_CameraColorTexture, input.texcoord).rrra;
+                //return SAMPLE_TEXTURE2D_X(_CameraColorTexture, sampler_CameraColorTexture, input.texcoord).rrra;
+                return SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_BlitTexture, input.texcoord);
             }
             ENDHLSL
             }
