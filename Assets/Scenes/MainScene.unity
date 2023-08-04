@@ -852,6 +852,9 @@ VisualEffect:
       - m_Value: 1
         m_Name: Speed
         m_Overridden: 1
+      - m_Value: 0.01
+        m_Name: Size
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -1108,6 +1111,7 @@ GameObject:
   - component: {fileID: 857463497}
   - component: {fileID: 857463499}
   - component: {fileID: 857463500}
+  - component: {fileID: 857463501}
   m_Layer: 0
   m_Name: PostEffect
   m_TagString: Untagged
@@ -1173,6 +1177,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ccNumber: 82
+--- !u!114 &857463501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 857463496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0d29c1c957730b4cbd6f5871f2310dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedNumber: 84
+  splitNumber: 83
+  minSpeed: 0
+  maxSpeed: 30
 --- !u!1 &963674011
 GameObject:
   m_ObjectHideFlags: 0
@@ -1448,6 +1468,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ccTriggers:
+  - number: 14
+    Event:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1004457607}
+          m_TargetAssemblyTypeName: Waveform, Assembly-CSharp
+          m_MethodName: SetUpdateFrame
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - number: 49
     Event:
       m_PersistentCalls:
@@ -1480,13 +1516,13 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - number: 14
+  - number: 79
     Event:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1004457607}
           m_TargetAssemblyTypeName: Waveform, Assembly-CSharp
-          m_MethodName: SetUpdateFrame
+          m_MethodName: SetAmp
           m_Mode: 0
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2731,7 +2767,7 @@ MonoBehaviour:
     m_Name: Rate
   CCNumber: 15
   minValue: 0.1
-  maxValue: 16
+  maxValue: 128
 --- !u!114 &1758128175
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -2746,7 +2782,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   valueProperty:
     m_Name: Amount
-  CCNumber: 52
+  CCNumber: 51
   minValue: 0
   maxValue: 1
 --- !u!1 &1807103400
@@ -2797,6 +2833,8 @@ GameObject:
   - component: {fileID: 1982963309}
   - component: {fileID: 1982963311}
   - component: {fileID: 1982963312}
+  - component: {fileID: 1982963314}
+  - component: {fileID: 1982963313}
   m_Layer: 0
   m_Name: GridVFX
   m_TagString: Untagged
@@ -2812,7 +2850,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1982963305}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.5, z: 0}
+  m_LocalPosition: {x: 0.25, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2889,6 +2927,9 @@ VisualEffect:
       - m_Value: 2.5
         m_Name: GridSize
         m_Overridden: 1
+      - m_Value: 16
+        m_Name: Rate
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -2945,5 +2986,38 @@ MonoBehaviour:
   vfx: {fileID: 1982963310}
   kickTrigger: {fileID: 1041446895}
   gridSize: 0.5
-  areaSize: {x: 5, y: 5, z: 5}
+  areaSize: {x: 8, y: 8, z: 5}
   cs: {fileID: 7200000, guid: 2e57bfdb9e0838243a9cfd0ce9fa6b71, type: 3}
+--- !u!114 &1982963313
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982963305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e1ad8897f75e4f458a606c5ae9663b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  valueProperty:
+    m_Name: Rate
+  CCNumber: 19
+  minValue: 16
+  maxValue: 128
+--- !u!114 &1982963314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982963305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdafc37f32b176349b1684c4455b98e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ExecuteInEditor: 1
+  m_Bindings:
+  - {fileID: 1982963313}
+  m_VisualEffect: {fileID: 1982963310}

@@ -124,4 +124,9 @@ public class Waveform : MonoBehaviour
     {
         maxThreshold = (value / 127.0f) * 10;
     }
+
+    public void SetAmp(byte value)
+    {
+        amp = 1 + (value / 128.0f) * 9;
+    }
 }

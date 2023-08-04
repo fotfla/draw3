@@ -4,7 +4,7 @@ using UnityEngine.Rendering.Universal;
 
 public class CameraCopyRenderPassFeature : ScriptableRendererFeature
 {
-    class CustomRenderPass : ScriptableRenderPass
+    class CopyRenderPass : ScriptableRenderPass
     {
         ProfilingSampler _profilingSampler = new ProfilingSampler("Copy");
         RTHandle source;
@@ -31,12 +31,12 @@ public class CameraCopyRenderPassFeature : ScriptableRendererFeature
         }
     }
 
-    CustomRenderPass m_ScriptablePass;
+    CopyRenderPass m_ScriptablePass;
     public RenderTexture texture;
 
     public override void Create()
     {
-        m_ScriptablePass = new CustomRenderPass();
+        m_ScriptablePass = new CopyRenderPass();
         m_ScriptablePass.renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
     }
 

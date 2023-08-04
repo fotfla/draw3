@@ -19,6 +19,25 @@ MonoBehaviour:
   depth:
     m_OverrideState: 1
     m_Value: 4
+--- !u!114 &-7062466015394740901
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82b844ed9b6c94943a259acdeb31cf71, type: 3}
+  m_Name: SlitScan
+  m_EditorClassIdentifier: 
+  active: 1
+  split:
+    m_OverrideState: 1
+    m_Value: 0
+  speed:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34,6 +53,7 @@ MonoBehaviour:
   components:
   - {fileID: 68953212455123404}
   - {fileID: -9108544822096559455}
+  - {fileID: -7062466015394740901}
 --- !u!114 &68953212455123404
 MonoBehaviour:
   m_ObjectHideFlags: 3

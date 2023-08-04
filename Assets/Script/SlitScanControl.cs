@@ -1,27 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
+
 
 namespace UnityEngine.Rendering.Universal
 {
     [RequireComponent(typeof(Volume))]
-    public class FeedBackControl : MonoBehaviour, IMidiInput
+    public class SlitScanControl : MonoBehaviour, IMidiInput
     {
         [SerializeField]
-        byte ccNumber;
+        byte speedNumber;
+        [SerializeField]
+        byte splitNumber;
 
-        FeedBack feedBack;
+        [SerializeField]
+        float minSpeed = 0.01f;
+        [SerializeField]
+        float maxSpeed = 20;
+        SlitScan slitScan;
 
         void Start()
         {
             var profile = GetComponent<Volume>().profile;
-            profile.TryGet(out feedBack);
+            profile.TryGet(out slitScan);
         }
 
         public void OnMidiControlChange(byte channel, byte number, byte value)
         {
-            if (ccNumber == number) feedBack.intensity.value = (value / 128.0f);
+            if (speedNumber == number) slitScan.speed.value = (value / 128.0f) * (maxSpeed - minSpeed) + minSpeed;
+            if (splitNumber == number) slitScan.split.value = value / 128f;
         }
 
         public void OnMidiNoteOn(byte channel, byte number, byte value) { }

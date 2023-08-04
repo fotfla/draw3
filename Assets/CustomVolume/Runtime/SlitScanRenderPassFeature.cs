@@ -2,44 +2,48 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-public class FeedBackRenderPassFeature : ScriptableRendererFeature
+public class SlitScanRenderPassFeature : ScriptableRendererFeature
 {
-    class FeedBackRenderPass : ScriptableRenderPass
+    class SlitScanRenderPass : ScriptableRenderPass
     {
-        ProfilingSampler _profilingSampler = new ProfilingSampler("FeedBack");
+        ProfilingSampler _profilingSampler = new ProfilingSampler("SlitScan");
 
         RTHandle source;
         RTHandle destination;
 
-        FeedBack feedBack;
+        SlitScan slitScan;
 
         Material material;
+
         private readonly int DestProp = Shader.PropertyToID("_Dest");
         private readonly int IntensityProp = Shader.PropertyToID("_Intensity");
+        private readonly int SplitProp = Shader.PropertyToID("_Split");
+        private readonly int SpeedProp = Shader.PropertyToID("_Speed");
 
         public void Setup(RTHandle source, in RenderingData renderingData)
         {
-            material = CoreUtils.CreateEngineMaterial("Hidden/Shader/FeedBack");
+            material = CoreUtils.CreateEngineMaterial("Hidden/Shader/SlitScan");
             this.source = source;
 
             var desc = renderingData.cameraData.cameraTargetDescriptor;
             desc.depthBufferBits = (int)DepthBits.None;
-            RenderingUtils.ReAllocateIfNeeded(ref destination, desc, name: "_Dest");
+            RenderingUtils.ReAllocateIfNeeded(ref destination, desc, name: "_Desc");
 
-            feedBack = VolumeManager.instance.stack.GetComponent<FeedBack>();
+            slitScan = VolumeManager.instance.stack.GetComponent<SlitScan>();
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
-            if (feedBack != null && feedBack.IsActive())
+            if (slitScan != null && slitScan.IsActive())
             {
                 var cmd = CommandBufferPool.Get();
                 using (new ProfilingScope(cmd, _profilingSampler))
                 {
                     material.SetTexture(DestProp, destination);
-                    material.SetFloat(IntensityProp, feedBack.intensity.value);
+                    material.SetFloat(SplitProp, slitScan.split.value);
+                    material.SetFloat(SpeedProp, slitScan.speed.value);
                     Blitter.BlitCameraTexture(cmd, source, source, material, 0);
-                    Blitter.BlitCameraTexture(cmd, source, destination, material, 1);
+                    Blitter.BlitCameraTexture(cmd, source, destination);
                 }
                 context.ExecuteCommandBuffer(cmd);
                 cmd.Clear();
@@ -54,11 +58,11 @@ public class FeedBackRenderPassFeature : ScriptableRendererFeature
         }
     }
 
-    FeedBackRenderPass m_ScriptablePass;
+    SlitScanRenderPass m_ScriptablePass;
 
     public override void Create()
     {
-        m_ScriptablePass = new FeedBackRenderPass();
+        m_ScriptablePass = new SlitScanRenderPass();
         m_ScriptablePass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
     }
 
