@@ -10,20 +10,32 @@ public class CameraCopyRenderPassFeature : ScriptableRendererFeature
         RTHandle source;
         RTHandle texture;
 
-        public void Setup(RTHandle source, RenderTexture texture, in RenderingData renderingData)
+        Material material;
+
+        public void Setup(RTHandle source, RenderTexture texture, Material material, in RenderingData renderingData)
         {
             this.source = source;
             this.texture = RTHandles.Alloc(texture);
+            this.material = material;
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             if (texture == null) return;
 
+
             var cmd = CommandBufferPool.Get();
             using (new ProfilingScope(cmd, _profilingSampler))
             {
-                Blitter.BlitCameraTexture(cmd, source, texture);
+                var s = renderingData.cameraData.renderer.cameraColorTargetHandle;
+                if (material == null)
+                {
+                    Blitter.BlitCameraTexture(cmd, s, texture);
+                }
+                else
+                {
+                    Blitter.BlitCameraTexture(cmd, s, texture, material, 0);
+                }
             }
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
@@ -33,6 +45,7 @@ public class CameraCopyRenderPassFeature : ScriptableRendererFeature
 
     CopyRenderPass m_ScriptablePass;
     public RenderTexture texture;
+    public Material material;
 
     public override void Create()
     {
@@ -43,7 +56,7 @@ public class CameraCopyRenderPassFeature : ScriptableRendererFeature
     public override void SetupRenderPasses(ScriptableRenderer renderer, in RenderingData renderingData)
     {
         m_ScriptablePass.ConfigureInput(ScriptableRenderPassInput.Color);
-        m_ScriptablePass.Setup(renderer.cameraColorTargetHandle, texture, renderingData);
+        m_ScriptablePass.Setup(renderer.cameraColorTargetHandle, texture, material, renderingData);
     }
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)

@@ -1,46 +1,45 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.Experimental.Rendering;
 
-public class EdgeDetectionRenderPassFeature : ScriptableRendererFeature
+public class FeedBackRenderPassFeature : ScriptableRendererFeature
 {
-    class EdgeDetectionRenderPass : ScriptableRenderPass
+    class FeedBackRenderPass : ScriptableRenderPass
     {
-        ProfilingSampler _profilingSampler = new ProfilingSampler("EdgeDetection");
+        ProfilingSampler _profilingSampler = new ProfilingSampler("FeedBack");
 
         RTHandle source;
+        RTHandle destination;
 
-        EdgeDetection edgeDetection;
+        FeedBack feedBack;
 
         Material material;
-
+        private readonly int DestProp = Shader.PropertyToID("_Dest");
         private readonly int IntensityProp = Shader.PropertyToID("_Intensity");
-        private readonly int DepthProp = Shader.PropertyToID("_Depth");
 
         public void Setup(RTHandle source, in RenderingData renderingData)
         {
-            material = CoreUtils.CreateEngineMaterial("Hidden/Shader/EdgeDetection");
+            material = CoreUtils.CreateEngineMaterial("Hidden/Shader/FeedBack");
             this.source = source;
-        }
+            var desc = renderingData.cameraData.cameraTargetDescriptor;
+            desc.depthBufferBits = (int)DepthBits.None;
+            RenderingUtils.ReAllocateIfNeeded(ref destination, desc, name: "_FeedbackDest");
 
-        public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
-        {
+            feedBack = VolumeManager.instance.stack.GetComponent<FeedBack>();
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
-            var stack = VolumeManager.instance.stack;
-            edgeDetection = stack.GetComponent<EdgeDetection>();
-
-            if (edgeDetection.IsActive())
+            if (feedBack != null && feedBack.IsActive())
             {
                 var cmd = CommandBufferPool.Get();
                 using (new ProfilingScope(cmd, _profilingSampler))
                 {
-                    material.SetFloat(IntensityProp, edgeDetection.intensity.value);
-                    material.SetInt(DepthProp, edgeDetection.depth.value);
+                    source = renderingData.cameraData.renderer.cameraColorTargetHandle;
+                    material.SetTexture(DestProp, destination);
+                    material.SetFloat(IntensityProp, feedBack.intensity.value);
                     Blitter.BlitCameraTexture(cmd, source, source, material, 0);
+                    Blitter.BlitCameraTexture(cmd, source, destination, material, 1);
                 }
                 context.ExecuteCommandBuffer(cmd);
                 cmd.Clear();
@@ -48,21 +47,18 @@ public class EdgeDetectionRenderPassFeature : ScriptableRendererFeature
             }
         }
 
-        public override void OnCameraCleanup(CommandBuffer cmd)
-        {
-        }
-
         void Dispose()
         {
             CoreUtils.Destroy(material);
+            destination?.Release();
         }
     }
 
-    EdgeDetectionRenderPass m_ScriptablePass;
+    FeedBackRenderPass m_ScriptablePass;
 
     public override void Create()
     {
-        m_ScriptablePass = new EdgeDetectionRenderPass();
+        m_ScriptablePass = new FeedBackRenderPass();
         m_ScriptablePass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
     }
 

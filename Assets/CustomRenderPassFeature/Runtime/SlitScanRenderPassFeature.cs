@@ -27,7 +27,7 @@ public class SlitScanRenderPassFeature : ScriptableRendererFeature
 
             var desc = renderingData.cameraData.cameraTargetDescriptor;
             desc.depthBufferBits = (int)DepthBits.None;
-            RenderingUtils.ReAllocateIfNeeded(ref destination, desc, name: "_Desc");
+            RenderingUtils.ReAllocateIfNeeded(ref destination, desc, name: "_SlitScanDesc");
 
             slitScan = VolumeManager.instance.stack.GetComponent<SlitScan>();
         }
@@ -42,8 +42,9 @@ public class SlitScanRenderPassFeature : ScriptableRendererFeature
                     material.SetTexture(DestProp, destination);
                     material.SetFloat(SplitProp, slitScan.split.value);
                     material.SetFloat(SpeedProp, slitScan.speed.value);
-                    Blitter.BlitCameraTexture(cmd, source, source, material, 0);
-                    Blitter.BlitCameraTexture(cmd, source, destination);
+                    var s = renderingData.cameraData.renderer.cameraColorTargetHandle;
+                    Blitter.BlitCameraTexture(cmd, s, s, material, 0);
+                    Blitter.BlitCameraTexture(cmd, s, destination);
                 }
                 context.ExecuteCommandBuffer(cmd);
                 cmd.Clear();

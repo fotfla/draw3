@@ -6,7 +6,7 @@ Shader "Hidden/Shader/EdgeDetection"
         ZWrite Off Cull Off ZTest Always Blend Off
         Pass
         {
-            Name "EdgeDetection"
+            Name "EdgeDetectionPass"
 
             HLSLPROGRAM
             #pragma vertex Vert

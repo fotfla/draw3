@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   texture: {fileID: 8400000, guid: 8fac7ea53079d554586684a91ffc4d5d, type: 2}
+  material: {fileID: -876546973899608171, guid: 1cace19b394865242be43612e78865cb,
+    type: 3}
 --- !u!114 &-3012128638404422824
 MonoBehaviour:
   m_ObjectHideFlags: 0

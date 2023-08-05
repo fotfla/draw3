@@ -2050,7 +2050,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   outputDeviceName:
-  - Launch Control XL 0
+  - Launch Control XL
 --- !u!1 &1600554068
 GameObject:
   m_ObjectHideFlags: 0
@@ -2388,9 +2388,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.11904761
+    y: 0
     width: 1
-    height: 0.7619048
+    height: 1
   near clip plane: 0.3
   far clip plane: 500
   field of view: 12.4
