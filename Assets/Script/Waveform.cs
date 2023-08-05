@@ -41,6 +41,8 @@ public class Waveform : MonoBehaviour
     [SerializeField]
     float animationSpeed = 0.1f;
 
+    private float alpha = 1.0f;
+
     void Start()
     {
         InitializeMesh();
@@ -48,6 +50,7 @@ public class Waveform : MonoBehaviour
 
     void Update()
     {
+        if (alpha == 0) return;
         var frameCount = Time.frameCount % updateFrame;
         if (frameCount == 0) UpdateMesh(audioLevelTracker.audioDataSlice);
         vfx.SetFloat(TimeProp, (frameCount / (float)updateFrame) * animationSpeed);
@@ -128,5 +131,10 @@ public class Waveform : MonoBehaviour
     public void SetAmp(byte value)
     {
         amp = 1 + (value / 128.0f) * 9;
+    }
+
+    public void SetAlpha(byte value)
+    {
+        alpha = (value / 127.0f);
     }
 }

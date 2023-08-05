@@ -608,7 +608,7 @@ GameObject:
   - component: {fileID: 647652694}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: EditorOnly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1254,6 +1254,7 @@ GameObject:
   - component: {fileID: 1004457610}
   - component: {fileID: 1004457609}
   - component: {fileID: 1004457614}
+  - component: {fileID: 1004457615}
   m_Layer: 0
   m_Name: Lines
   m_TagString: Untagged
@@ -1331,6 +1332,9 @@ VisualEffect:
       - m_Value: 0
         m_Name: Intensity
         m_Overridden: 1
+      - m_Value: 0
+        m_Name: Alpha
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -1344,7 +1348,33 @@ VisualEffect:
     m_Matrix4x4f:
       m_Array: []
     m_AnimationCurve:
-      m_Array: []
+      m_Array:
+      - m_Value:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 2.1607795
+            outSlope: 2.1607795
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0.062215507
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        m_Name: RotationAnimation
+        m_Overridden: 1
     m_Gradient:
       m_Array: []
     m_NamedObject:
@@ -1403,6 +1433,7 @@ MonoBehaviour:
   - {fileID: 1004457611}
   - {fileID: 1004457610}
   - {fileID: 1004457609}
+  - {fileID: 1004457615}
   m_VisualEffect: {fileID: 1004457605}
 --- !u!114 &1004457609
 MonoBehaviour:
@@ -1532,6 +1563,39 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - number: 80
+    Event:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1004457607}
+          m_TargetAssemblyTypeName: Waveform, Assembly-CSharp
+          m_MethodName: SetAlpha
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &1004457615
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004457603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e1ad8897f75e4f458a606c5ae9663b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  valueProperty:
+    m_Name: Alpha
+  CCNumber: 80
+  minValue: 0
+  maxValue: 1
 --- !u!1 &1041446892
 GameObject:
   m_ObjectHideFlags: 0
@@ -1884,7 +1948,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputDeviceNames:
   - Launch
-  isDebug: 1
+  isDebug: 0
 --- !u!1 &1255930215
 GameObject:
   m_ObjectHideFlags: 0
@@ -2065,7 +2129,7 @@ GameObject:
   - component: {fileID: 1600554069}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: EditorOnly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2109,7 +2173,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &1600554071
 Canvas:
   m_ObjectHideFlags: 0
