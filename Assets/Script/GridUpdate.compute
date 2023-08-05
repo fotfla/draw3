@@ -65,7 +65,15 @@ void DirectionUpdate(uint3 id : SV_DispatchThreadID)
         d.x = 1 * sign(p.x);
     }
     ParticleBuffer[index].direction = d;
-    ParticleBuffer[index].prevPosition = ParticleBuffer[index].position + d * GridSize;
+    
+    float3 pos = ParticleBuffer[index].position;
+    if (abs(pos.x) > AreaSize.x * 0.5 || abs(pos.y) > AreaSize.y * 0.5 || abs(pos.z) > AreaSize.z * 0.5)
+    {
+        float3 p = hash31(id.x + Seed) - 0.5;
+        pos = floor(p * AreaSize / GridSize) * GridSize;
+        //ParticleBuffer[index].position = pos;
+    }
+    ParticleBuffer[index].prevPosition = pos + d * GridSize;
 }
 
 [numthreads(8, 1, 1)]
