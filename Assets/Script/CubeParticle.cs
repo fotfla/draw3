@@ -101,6 +101,12 @@ public class CubeParticle : MonoBehaviour
         cs.SetBuffer(updateKernel, NextBufferProp, nextParticleBuffer);
         cs.Dispatch(updateKernel, count / 8, 1, 1);
     }
+
+    public void SetMaxSize(byte value)
+    {
+        var v = (value / 127.0f) * 3.9f + 0.1f;
+        scaleSize = new Vector4(scaleSize.x, v, scaleSize.z, v);
+    }
 }
 
 

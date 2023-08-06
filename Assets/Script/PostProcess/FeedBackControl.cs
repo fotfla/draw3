@@ -10,18 +10,23 @@ namespace UnityEngine.Rendering.Universal
     {
         [SerializeField]
         byte ccNumber;
+        [SerializeField]
+        byte speedNumber;
+        [SerializeField]
+        byte scaleNumber;
 
         FeedBack feedBack;
 
         void Start()
         {
-            var profile = GetComponent<Volume>().profile;
-            profile.TryGet(out feedBack);
+            GetComponent<Volume>().profile.TryGet(out feedBack);
         }
 
         public void OnMidiControlChange(byte channel, byte number, byte value)
         {
             if (ccNumber == number) feedBack.intensity.value = (value / 128.0f);
+            if (speedNumber == number) feedBack.speed.value = (value / 127.0f);
+            if (scaleNumber == number) feedBack.scale.value = (value / 128.0f);
         }
 
         public void OnMidiNoteOn(byte channel, byte number, byte value) { }

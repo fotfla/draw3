@@ -19,6 +19,8 @@ Shader "Hidden/Shader/FeedBack"
             SAMPLER(sampler_Dest);
 
             float _Intensity;
+            float _Speed;
+            float _Scale;
 
             #pragma vertex Vert
             #pragma fragment frag
@@ -28,8 +30,8 @@ Shader "Hidden/Shader/FeedBack"
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
                 float4 color = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_BlitTexture, input.texcoord);
-                float4 dest = SAMPLE_TEXTURE2D_X(_Dest, sampler_Dest, input.texcoord);
-                return lerp(color, dest, _Intensity);
+                float4 dest = SAMPLE_TEXTURE2D_X(_Dest, sampler_Dest, (input.texcoord - 0.5) * _Scale * 2 + 0.5);
+                return lerp(color, dest * _Speed, _Intensity);
             }
             ENDHLSL
         }

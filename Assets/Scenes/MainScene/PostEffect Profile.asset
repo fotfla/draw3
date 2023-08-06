@@ -70,3 +70,9 @@ MonoBehaviour:
   intensity:
     m_OverrideState: 1
     m_Value: 0
+  speed:
+    m_OverrideState: 1
+    m_Value: 1
+  scale:
+    m_OverrideState: 1
+    m_Value: 0.5

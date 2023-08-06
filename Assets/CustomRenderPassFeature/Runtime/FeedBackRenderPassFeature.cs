@@ -16,6 +16,8 @@ public class FeedBackRenderPassFeature : ScriptableRendererFeature
         Material material;
         private readonly int DestProp = Shader.PropertyToID("_Dest");
         private readonly int IntensityProp = Shader.PropertyToID("_Intensity");
+        private readonly int SpeedProp = Shader.PropertyToID("_Speed");
+        private readonly int ScaleProp = Shader.PropertyToID("_Scale");
 
         public void Setup(RTHandle source, in RenderingData renderingData)
         {
@@ -38,6 +40,8 @@ public class FeedBackRenderPassFeature : ScriptableRendererFeature
                     source = renderingData.cameraData.renderer.cameraColorTargetHandle;
                     material.SetTexture(DestProp, destination);
                     material.SetFloat(IntensityProp, feedBack.intensity.value);
+                    material.SetFloat(SpeedProp, feedBack.speed.value);
+                    material.SetFloat(ScaleProp, feedBack.scale.value);
                     Blitter.BlitCameraTexture(cmd, source, source, material, 0);
                     Blitter.BlitCameraTexture(cmd, source, destination, material, 1);
                 }

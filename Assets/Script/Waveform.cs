@@ -130,7 +130,7 @@ public class Waveform : MonoBehaviour
 
     public void SetAmp(byte value)
     {
-        amp = 1 + (value / 128.0f) * 9;
+        amp = 1 + (value / 128.0f) * 14;
     }
 
     public void SetAlpha(byte value)
